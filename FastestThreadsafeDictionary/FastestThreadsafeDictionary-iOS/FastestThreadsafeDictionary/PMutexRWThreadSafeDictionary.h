@@ -3,7 +3,7 @@
 //  FastestThreadsafeDictionary-iOS
 //
 //  Created by Gavin Xiang on 2024/6/17.
-//  Copyright © 2024 trongbangvp@gmail.com. All rights reserved.
+//  Copyright © 2024 gavin.xiang. All rights reserved.
 //
 
 

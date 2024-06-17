@@ -2,8 +2,8 @@
 //  SpinLockRWThreadSafeDictionary.m
 //  FastestThreadsafeDictionary-iOS
 //
-//  Created by trongbangvp@gmail.com on 3/31/17.
-//  Copyright © 2017 trongbangvp@gmail.com. All rights reserved.
+//  Created by gavin.xiang on 2024/6/17.
+//  Copyright © 2017 gavin.xiang. All rights reserved.
 //
 
 #import "SpinLockRWThreadSafeDictionary.h"

@@ -2,7 +2,7 @@
 //  ThreadsafeArray.h
 //  ZaloiOS-Developer
 //
-//  Created by trongbangvp@gmail.com on 3/4/17.
+//  Created by gavin.xiang on 2024/6/17.
 //
 //
 

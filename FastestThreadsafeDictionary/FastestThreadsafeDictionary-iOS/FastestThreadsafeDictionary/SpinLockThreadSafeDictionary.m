@@ -2,8 +2,8 @@
 //  SpinLockThreadSafeDictionary.m
 //  FastestThreadsafeDictionary-iOS
 //
-//  Created by trongbangvp@gmail.com on 9/27/16.
-//  Copyright © 2016 trongbangvp@gmail.com. All rights reserved.
+//  Created by gavin.xiang on 9/27/16.
+//  Copyright © 2024 gavin.xiang. All rights reserved.
 //
 
 #import <libkern/OSAtomic.h>

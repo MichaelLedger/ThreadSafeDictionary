@@ -2,8 +2,8 @@
 //  AppDelegate.m
 //  FastestThreadsafeDictionary-iOS
 //
-//  Created by trongbangvp@gmail.com on 9/1/16.
-//  Copyright © 2016 trongbangvp@gmail.com. All rights reserved.
+//  Created by gavin.xiang on 2024/6/17.
+//  Copyright © 2024 gavin.xiang. All rights reserved.
 //
 
 #import "AppDelegate.h"
