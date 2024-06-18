@@ -7,7 +7,7 @@ NSMutableDictionary of iOS is not threadsafe. You may encountered problem when r
 `PMutex(recommend) > UnfairLock > SpinLock > Atomic > Barrier`
 
 | PMutex | UnfairLock | SpinLock | Atomic | Barrier |
-|:|:|:|:|:|
+|-|-|-|-|-|
 | 0.203294 | 0.226578 | 0.300655 | 0.956473 | 1.106706 |
 | 0.197390 | 0.215329 | 0.316888 | 0.616962 | 1.200954 |
 | 0.195957 | 0.224263 | 0.275043 | 0.615157 | 1.213631 |
