@@ -25,6 +25,10 @@ Note that both of them have their pros and cons:
 
 ## Tips:
 
+The rise of parallelism in hardware has led to significant changes in software development. This has brought about the introduction of APIs for thread management and synchronization primitives in SDKs. Crafting a multi-threaded program that runs without glitches is a challenging endeavor. Among the most daunting challenges is ensuring different threads access memory without conflict.
+In true parallel systems (like multi-core or multiprocessor setups), two threads might simultaneously read from and write to the same memory location, leading to a “data race.” Delving into the finer details (such as data size, alignment, processor caches, and atomics) might get complex, but using mutexes is the conventional method to prevent data races. When a mutex instance is in place, and its lock/unlock methods are appropriately called, it ensures the atomicity of data operations and exclusive access.
+On Apple’s platforms, the os_unfair_lock is the most performance-efficient lock available.
+
 All the old C locks are there, but they’re trying to steer everyone towards os_unfair_lock, nowadays. See the Concurrent Programming with GCD where they discuss C lock mechanisms (and how you’d use them in Swift if you wanted to), and this discussion touches upon their thought process regarding locks nowadays.
 
 But you can use pthread_mutex_t like before. Or if you’re dealing with an atomic, you can use OSAtomicXXX. The old spinlock has been deprecated, with this os_unfair_lock recommended in lieu of that. All of these options are buried in the man pages.
@@ -34,6 +38,10 @@ Needless to say, from Objective-C, you still have NSLock, NSRecursiveLock and th
 The old Threading Programming Guide: Using Locks enumerates a few of the locking alternatives.
 
 ## Reference:
+
+[Is there any native C-level lock other than os_unfair_lock in Objective-C/Swift?](https://stackoverflow.com/questions/60045664/is-there-any-native-c-level-lock-other-than-os-unfair-lock-in-objective-c-swift)
+
+[Swift: Mutex benchmark](https://serhiybutz.medium.com/swift-mutex-benchmark-b21ee293d9ad)
 
 [pthread_mutex_t](https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man3/pthread_mutex_lock.3.html)
 
@@ -45,23 +53,20 @@ The old Threading Programming Guide: Using Locks enumerates a few of the locking
 
 [Concurrent Programming with GCD](https://developer.apple.com/videos/play/wwdc2016/720/?time=997)
 
-[Is there any native C-level lock other than os_unfair_lock in Objective-C/Swift?](https://stackoverflow.com/questions/60045664/is-there-any-native-c-level-lock-other-than-os-unfair-lock-in-objective-c-swift)
-
 [Threading Programming Guide: Using Locks](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/ThreadSafety/ThreadSafety.html#//apple_ref/doc/uid/10000057i-CH8-SW16)
 
 [ManPages_iPhoneOS](https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/index.html)
 
-https://betterprogramming.pub/mastering-thread-safety-in-swift-with-one-runtime-trick-260c358a7515
+[Mastering Thread Safety in Swift With One Runtime Trick](https://betterprogramming.pub/mastering-thread-safety-in-swift-with-one-runtime-trick-260c358a7515)
 
-https://www.mikeash.com/pyblog/friday-qa-2011-03-04-a-tour-of-osatomic.html
+[A Tour of OSAtomic](https://www.mikeash.com/pyblog/friday-qa-2011-03-04-a-tour-of-osatomic.html)
 
-http://www.alexonlinux.com/pthread-mutex-vs-pthread-spinlock
+[pthread mutex vs pthread spinlock](http://www.alexonlinux.com/pthread-mutex-vs-pthread-spinlock)
 
-https://github.com/ReactiveCocoa/ReactiveCocoa/issues/2619
+[Atomic: SPINLOCK is not safe in iOS](https://github.com/ReactiveCocoa/ReactiveCocoa/issues/2619)
 
-https://stackoverflow.com/questions/68614552/swift-access-race-with-os-unfair-lock-lock
+[Swift access race with os_unfair_lock_lock](https://stackoverflow.com/questions/68614552/swift-access-race-with-os-unfair-lock-lock)
 
-https://juejin.cn/post/6903421287713439752
+[iOS OSSpinLock](https://juejin.cn/post/6903421287713439752)
 
-https://stackoverflow.com/questions/12949028/spin-lock-implementations-osspinlock
-
+[Spin Lock Implementations (OSSpinLock)](https://stackoverflow.com/questions/12949028/spin-lock-implementations-osspinlock)
