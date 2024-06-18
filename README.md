@@ -4,7 +4,7 @@ NSMutableDictionary of iOS is not threadsafe. You may encountered problem when r
   + Use separated lock for read and write. So, read operation is seemly lockless in case that we rarely write to the dictionary (such as lazy initialization, only 1 thread initialize data once and other threads read the data).
   + Only lock when read/write, write/write concurrently.
 
-`PMutex(recommend) > UnfairLock > SpinLock > Atomic > Barrier`
+`PMutex(not suit for complicated project) > UnfairLock(recommend) > SpinLock > Atomic > Barrier`
 
 | PMutex | UnfairLock | SpinLock | Atomic | Barrier |
 |-|-|-|-|-|
@@ -25,6 +25,8 @@ Note that both of them have their pros and cons:
 
 ## Tips:
 
+`pthread_mutex_t`: a comprehensive POSIX Threads (Pthreads) mutex, which is provided by the lower-level C API. The size of its state structure is considerably larger than that of os_unfair_lock, 64 bytes. By default it is configured for maximum speed at the expense of correctness: not only is there no check of the owner and can any thread unlock it (as if it were a binary semaphore). No attempt of priority inversion resolution and fairness control is done either. But it can be configured to respect fairness and perform error checking and priority inheritance if you prefer correctness over speed. A Pthreads mutex can also be configured for recursion. Finally, Pthreads mutex does support condition variables, that, among other things, allows you to establish a wait timeout period.
+
 The rise of parallelism in hardware has led to significant changes in software development. This has brought about the introduction of APIs for thread management and synchronization primitives in SDKs. Crafting a multi-threaded program that runs without glitches is a challenging endeavor. Among the most daunting challenges is ensuring different threads access memory without conflict.
 In true parallel systems (like multi-core or multiprocessor setups), two threads might simultaneously read from and write to the same memory location, leading to a “data race.” Delving into the finer details (such as data size, alignment, processor caches, and atomics) might get complex, but using mutexes is the conventional method to prevent data races. When a mutex instance is in place, and its lock/unlock methods are appropriately called, it ensures the atomicity of data operations and exclusive access.
 On Apple’s platforms, the os_unfair_lock is the most performance-efficient lock available.
@@ -37,11 +39,13 @@ Needless to say, from Objective-C, you still have NSLock, NSRecursiveLock and th
 
 The old Threading Programming Guide: Using Locks enumerates a few of the locking alternatives.
 
+Some items behaved steadily as opposed to the others, like the BiSemaphore and OSUnfairLock: the measurements (the total time of the lock operation immediately followed by the unlock operation) for them mostly varied in the range of 8-10 microseconds. Such a drastic degradation in performance is caused by the need for a thread to enter the kernel, go to the sleeping state, and the subsequent awakening.
+
 ## Reference:
 
-[Is there any native C-level lock other than os_unfair_lock in Objective-C/Swift?](https://stackoverflow.com/questions/60045664/is-there-any-native-c-level-lock-other-than-os-unfair-lock-in-objective-c-swift)
-
 [Swift: Mutex benchmark](https://serhiybutz.medium.com/swift-mutex-benchmark-b21ee293d9ad)
+
+[Is there any native C-level lock other than os_unfair_lock in Objective-C/Swift?](https://stackoverflow.com/questions/60045664/is-there-any-native-c-level-lock-other-than-os-unfair-lock-in-objective-c-swift)
 
 [pthread_mutex_t](https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man3/pthread_mutex_lock.3.html)
 
