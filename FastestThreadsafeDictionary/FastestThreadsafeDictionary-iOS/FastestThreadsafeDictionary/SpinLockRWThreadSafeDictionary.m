@@ -15,7 +15,7 @@
     volatile OSSpinLock _spinLockW;
     volatile int32_t _readCount;
 }
-@property(atomic, strong) NSMutableDictionary* dic;
+@property(nonatomic, strong) NSMutableDictionary* dic;
 @end
 
 @implementation SpinLockRWThreadSafeDictionary
@@ -44,6 +44,11 @@
             _dic = [NSMutableDictionary new];
     }
     return self;
+}
+
+-(void)dealloc {
+    _spinLockR = nil;
+    _spinLockW = nil;
 }
 
 #pragma mark - Read operation

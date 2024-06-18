@@ -14,6 +14,7 @@
 #import "SpinLockThreadSafeDictionary.h"
 #import "BarrierThreadSafeDictionary.h"
 #import "SpinLockRWThreadSafeDictionary.h"
+#import "UnfairLockThreadSafeDictionary.h"
 
 typedef NS_ENUM(NSUInteger, ReadWriteType) {
     ReadWriteTypeWriteOnce,// write only once & left times all read
@@ -203,9 +204,17 @@ void testSpinLockRWDic()
     dic = nil;
 }
 
-void testFastestOSAtomicDic()
+void testOSAtomicDic()
 {
     AtomicThreadSafeDictionary* dic = [AtomicThreadSafeDictionary new];
+    readWriteOnMultiThread(dic);
+    NSLog(@"release dictionary");
+    dic = nil;
+}
+
+void testUnfairLockAtomicDic()
+{
+    UnfairLockThreadSafeDictionary* dic = [UnfairLockThreadSafeDictionary new];
     readWriteOnMultiThread(dic);
     NSLog(@"release dictionary");
     dic = nil;

@@ -10,6 +10,7 @@
 		673B2E022C20311000F56DC1 /* BarrierThreadSafeDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 673B2E012C20311000F56DC1 /* BarrierThreadSafeDictionary.m */; };
 		673B2E0B2C20432900F56DC1 /* PMutexRWThreadSafeDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 673B2E0A2C20432900F56DC1 /* PMutexRWThreadSafeDictionary.m */; };
 		6777E07B2C217A1500893474 /* PMutexThreadSafeDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 6777E07A2C217A1500893474 /* PMutexThreadSafeDictionary.m */; };
+		6777E0A52C217C2A00893474 /* UnfairLockThreadSafeDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 6777E0A42C217C2A00893474 /* UnfairLockThreadSafeDictionary.m */; };
 		C02740E11E6AEB3600B3FC84 /* ThreadsafeArray.m in Sources */ = {isa = PBXBuildFile; fileRef = C02740E01E6AEB3600B3FC84 /* ThreadsafeArray.m */; };
 		C040CBC01D9A7C48008FD52E /* SpinLockThreadSafeDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = C040CBBF1D9A7C48008FD52E /* SpinLockThreadSafeDictionary.m */; };
 		C0499DF91E8E11E3006D3A70 /* SpinLockRWThreadSafeDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = C0499DF81E8E11E3006D3A70 /* SpinLockRWThreadSafeDictionary.m */; };
@@ -30,6 +31,8 @@
 		673B2E0A2C20432900F56DC1 /* PMutexRWThreadSafeDictionary.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PMutexRWThreadSafeDictionary.m; sourceTree = "<group>"; };
 		6777E0792C217A1500893474 /* PMutexThreadSafeDictionary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PMutexThreadSafeDictionary.h; path = ../../PMutexThreadSafeDictionary.h; sourceTree = "<group>"; };
 		6777E07A2C217A1500893474 /* PMutexThreadSafeDictionary.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PMutexThreadSafeDictionary.m; path = ../../PMutexThreadSafeDictionary.m; sourceTree = "<group>"; };
+		6777E0A32C217C2A00893474 /* UnfairLockThreadSafeDictionary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UnfairLockThreadSafeDictionary.h; sourceTree = "<group>"; };
+		6777E0A42C217C2A00893474 /* UnfairLockThreadSafeDictionary.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UnfairLockThreadSafeDictionary.m; sourceTree = "<group>"; };
 		C02740DF1E6AEB3600B3FC84 /* ThreadsafeArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadsafeArray.h; sourceTree = "<group>"; };
 		C02740E01E6AEB3600B3FC84 /* ThreadsafeArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadsafeArray.m; sourceTree = "<group>"; };
 		C040CBBE1D9A7C48008FD52E /* SpinLockThreadSafeDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpinLockThreadSafeDictionary.h; sourceTree = "<group>"; };
@@ -129,6 +132,8 @@
 				C040CBBF1D9A7C48008FD52E /* SpinLockThreadSafeDictionary.m */,
 				673B2E002C20311000F56DC1 /* BarrierThreadSafeDictionary.h */,
 				673B2E012C20311000F56DC1 /* BarrierThreadSafeDictionary.m */,
+				6777E0A32C217C2A00893474 /* UnfairLockThreadSafeDictionary.h */,
+				6777E0A42C217C2A00893474 /* UnfairLockThreadSafeDictionary.m */,
 			);
 			path = FastestThreadsafeDictionary;
 			sourceTree = "<group>";
@@ -206,6 +211,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6777E0A52C217C2A00893474 /* UnfairLockThreadSafeDictionary.m in Sources */,
 				673B2E0B2C20432900F56DC1 /* PMutexRWThreadSafeDictionary.m in Sources */,
 				6777E07B2C217A1500893474 /* PMutexThreadSafeDictionary.m in Sources */,
 				C0FF45471D78136A009D4C3B /* ViewController.m in Sources */,

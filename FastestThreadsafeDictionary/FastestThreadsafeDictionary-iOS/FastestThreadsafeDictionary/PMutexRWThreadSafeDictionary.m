@@ -15,7 +15,7 @@
     pthread_mutex_t _mutex_read;
     pthread_mutex_t _mutex_write;
 }
-@property(atomic, strong) NSMutableDictionary* dic;
+@property(nonatomic, strong) NSMutableDictionary* dic;
 @end
 
 @implementation PMutexRWThreadSafeDictionary

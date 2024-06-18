@@ -12,7 +12,7 @@
 {
     OSSpinLock _spinLock;
 }
-@property(atomic, strong) NSMutableDictionary* dic;
+@property(nonatomic, strong) NSMutableDictionary* dic;
 @end
 
 @implementation SpinLockThreadSafeDictionary

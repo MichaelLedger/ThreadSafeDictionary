@@ -14,7 +14,7 @@
 {
     OSSpinLock _spinLock;
 }
-@property(atomic, strong) NSMutableArray* internalArray;
+@property(nonatomic, strong) NSMutableArray* internalArray;
 @end
 
 @implementation ThreadsafeArray

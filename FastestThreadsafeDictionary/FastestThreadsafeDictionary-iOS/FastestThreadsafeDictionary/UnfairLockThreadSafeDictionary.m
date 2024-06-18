@@ -1,21 +1,24 @@
 //
-//  TBThreadSafeMutableDictionary.m
-//  TestLockless-iOS
+//  UnfairLockThreadSafeDictionary.m
+//  FastestThreadsafeDictionary-iOS
 //
-//  Created by gavin.xiang on 2024/6/17.
-//  Copyright © 2024 gavin.xiang. All rights reserved.
+//  Created by Gavin Xiang on 2024/6/18.
+//  Copyright © 2024 trongbangvp@gmail.com. All rights reserved.
 //
-#import <pthread/pthread.h>
-#import "PMutexThreadSafeDictionary.h"
 
-@interface PMutexThreadSafeDictionary()
+#import "UnfairLockThreadSafeDictionary.h"
+#include <os/lock.h>
+
+// 'OSSpinLock' is deprecated: first deprecated in iOS 10.0 - Use os_unfair_lock() from <os/lock.h> instead
+@interface UnfairLockThreadSafeDictionary()
 {
-    pthread_mutex_t _mutex;
+    SD_LOCK_DECLARE(_lock);
 }
+
 @property(nonatomic, strong) NSMutableDictionary *storage;
 @end
 
-@implementation PMutexThreadSafeDictionary
+@implementation UnfairLockThreadSafeDictionary
 
 /**
  Private common init steps
@@ -24,7 +27,7 @@
 {
     self = [super init];
     if (self) {
-        pthread_mutex_init(&_mutex, NULL);
+        SD_LOCK_INIT(_lock);
     }
     return self;
 }
@@ -92,108 +95,101 @@
     return self;
 }
 
-
--(void)dealloc
-{
-    pthread_mutex_destroy(&_mutex);
-}
-
 #pragma mark - Read operation
 //Read operation is lockless, just checking lock-write
 
 -(NSUInteger)count
 {
-    pthread_mutex_lock(&_mutex);
+    SD_LOCK(self->_lock);
     
     NSUInteger n = self.storage.count;
     
-    pthread_mutex_unlock(&_mutex);
+    SD_UNLOCK(self->_lock);
     return n;
 }
 
 -(id) objectForKey:(id)aKey
 {
-    pthread_mutex_lock(&_mutex);
+    SD_LOCK(self->_lock);
     
     id val = [self.storage objectForKey:aKey];
     
-    pthread_mutex_unlock(&_mutex);
+    SD_UNLOCK(self->_lock);
     return val;
 }
 
 - (NSEnumerator*)keyEnumerator
 {
-    pthread_mutex_lock(&_mutex);
+    SD_LOCK(self->_lock);
     
     id val = [self.storage keyEnumerator];
     
-    pthread_mutex_unlock(&_mutex);
+    SD_UNLOCK(self->_lock);
     return val;
 }
 - (NSArray*)allKeys
 {
-    pthread_mutex_lock(&_mutex);
+    SD_LOCK(self->_lock);
     
     id val = [self.storage allKeys];
     
-    pthread_mutex_unlock(&_mutex);
+    SD_UNLOCK(self->_lock);
     return val;
 }
 - (NSArray*)allValues
 {
-    pthread_mutex_lock(&_mutex);
+    SD_LOCK(self->_lock);
     
     id val = [self.storage allValues];
     
-    pthread_mutex_unlock(&_mutex);
+    SD_UNLOCK(self->_lock);
     return val;
 }
 
 #pragma mark - Write operation
 -(void) setObject:(id)anObject forKey:(id<NSCopying>)aKey
 {
-    pthread_mutex_lock(&_mutex);
+    SD_LOCK(self->_lock);
     
     [self.storage setObject:anObject forKey:aKey];
     
-    pthread_mutex_unlock(&_mutex);
+    SD_UNLOCK(self->_lock);
 }
 
 - (void)addEntriesFromDictionary:(NSDictionary*)otherDictionary
 {
-    pthread_mutex_lock(&_mutex);
+    SD_LOCK(self->_lock);
     
     [self.storage addEntriesFromDictionary:otherDictionary];
     
-    pthread_mutex_unlock(&_mutex);
+    SD_UNLOCK(self->_lock);
 }
 
 - (void)removeObjectForKey:(id)aKey
 {
-    pthread_mutex_lock(&_mutex);
+    SD_LOCK(self->_lock);
     
     [self.storage removeObjectForKey:aKey];
     
-    pthread_mutex_unlock(&_mutex);
+    SD_UNLOCK(self->_lock);
 }
 
 - (void)removeObjectsForKeys:(NSArray *)keyArray
 {
-    pthread_mutex_lock(&_mutex);
+    SD_LOCK(self->_lock);
     
     [self.storage removeObjectsForKeys:keyArray];
     
-    pthread_mutex_unlock(&_mutex);
+    SD_UNLOCK(self->_lock);
 }
 
 - (void)removeAllObjects
 {
-    pthread_mutex_lock(&_mutex);
+    SD_LOCK(self->_lock);
     
     [self.storage removeAllObjects];
     
-    pthread_mutex_unlock(&_mutex);
+    SD_UNLOCK(self->_lock);
 }
 
 @end
-
