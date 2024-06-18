@@ -12,31 +12,87 @@
 {
     pthread_mutex_t _mutex;
 }
-@property(atomic, strong) NSMutableDictionary* dic;
+@property(atomic, strong) NSMutableDictionary *storage;
 @end
 
 @implementation PMutexThreadSafeDictionary
 
--(id) init
+/**
+ Private common init steps
+ */
+- (instancetype)initCommon
 {
-    if(self = [super init])
-    {
+    self = [super init];
+    if (self) {
         pthread_mutex_init(&_mutex, NULL);
-        _dic = [NSMutableDictionary new];
     }
     return self;
 }
--(id)initWithDictionary:(NSDictionary *)otherDictionary
+
+- (instancetype)init
 {
-    if(self = [super init])
-    {
-        if(otherDictionary)
-            _dic = [otherDictionary mutableCopy];
-        else
-            _dic = [NSMutableDictionary new];
+    self = [self initCommon];
+    if (self) {
+        _storage = [NSMutableDictionary dictionary];
     }
     return self;
 }
+
+- (instancetype)initWithCapacity:(NSUInteger)numItems
+{
+    self = [self initCommon];
+    if (self) {
+        _storage = [NSMutableDictionary dictionaryWithCapacity:numItems];
+    }
+    return self;
+}
+
+- (NSDictionary *)initWithContentsOfFile:(NSString *)path
+{
+    self = [self initCommon];
+    if (self) {
+        _storage = [NSMutableDictionary dictionaryWithContentsOfFile:path];
+    }
+    return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [self initCommon];
+    if (self) {
+        _storage = [[NSMutableDictionary alloc] initWithCoder:aDecoder];
+    }
+    return self;
+}
+
+- (instancetype)initWithDictionary:(NSDictionary *)otherDictionary copyItems:(BOOL)flag {
+    self = [self initCommon];
+    if (self) {
+        _storage = [[NSMutableDictionary alloc] initWithDictionary:otherDictionary copyItems:flag];
+    }
+    return self;
+}
+
+- (instancetype)initWithObjects:(const id [])objects forKeys:(const id<NSCopying> [])keys count:(NSUInteger)cnt
+{
+    self = [self initCommon];
+    if (self) {
+        if (!_storage) {
+            _storage = [NSMutableDictionary dictionary];
+        }
+        if (!objects || !keys) {
+            // [NSDictionary dictionary] will invoke this.
+            // [NSException raise:NSInvalidArgumentException format:@"objects and keys cannot be nil"];
+        } else {
+            for (NSUInteger i = 0; i < cnt; ++i) {
+                _storage[keys[i]] = objects[i];
+            }
+        }
+    }
+    return self;
+}
+
+
 -(void)dealloc
 {
     pthread_mutex_destroy(&_mutex);
@@ -49,7 +105,7 @@
 {
     pthread_mutex_lock(&_mutex);
     
-    NSUInteger n = self.dic.count;
+    NSUInteger n = self.storage.count;
     
     pthread_mutex_unlock(&_mutex);
     return n;
@@ -59,7 +115,7 @@
 {
     pthread_mutex_lock(&_mutex);
     
-    id val = [self.dic objectForKey:aKey];
+    id val = [self.storage objectForKey:aKey];
     
     pthread_mutex_unlock(&_mutex);
     return val;
@@ -69,7 +125,7 @@
 {
     pthread_mutex_lock(&_mutex);
     
-    id val = [self.dic keyEnumerator];
+    id val = [self.storage keyEnumerator];
     
     pthread_mutex_unlock(&_mutex);
     return val;
@@ -78,7 +134,7 @@
 {
     pthread_mutex_lock(&_mutex);
     
-    id val = [self.dic allKeys];
+    id val = [self.storage allKeys];
     
     pthread_mutex_unlock(&_mutex);
     return val;
@@ -87,7 +143,7 @@
 {
     pthread_mutex_lock(&_mutex);
     
-    id val = [self.dic allValues];
+    id val = [self.storage allValues];
     
     pthread_mutex_unlock(&_mutex);
     return val;
@@ -98,7 +154,7 @@
 {
     pthread_mutex_lock(&_mutex);
     
-    [self.dic setObject:anObject forKey:aKey];
+    [self.storage setObject:anObject forKey:aKey];
     
     pthread_mutex_unlock(&_mutex);
 }
@@ -107,7 +163,7 @@
 {
     pthread_mutex_lock(&_mutex);
     
-    [self.dic addEntriesFromDictionary:otherDictionary];
+    [self.storage addEntriesFromDictionary:otherDictionary];
     
     pthread_mutex_unlock(&_mutex);
 }
@@ -116,7 +172,7 @@
 {
     pthread_mutex_lock(&_mutex);
     
-    [self.dic removeObjectForKey:aKey];
+    [self.storage removeObjectForKey:aKey];
     
     pthread_mutex_unlock(&_mutex);
 }
@@ -125,7 +181,7 @@
 {
     pthread_mutex_lock(&_mutex);
     
-    [self.dic removeObjectsForKeys:keyArray];
+    [self.storage removeObjectsForKeys:keyArray];
     
     pthread_mutex_unlock(&_mutex);
 }
@@ -134,7 +190,7 @@
 {
     pthread_mutex_lock(&_mutex);
     
-    [self.dic removeAllObjects];
+    [self.storage removeAllObjects];
     
     pthread_mutex_unlock(&_mutex);
 }

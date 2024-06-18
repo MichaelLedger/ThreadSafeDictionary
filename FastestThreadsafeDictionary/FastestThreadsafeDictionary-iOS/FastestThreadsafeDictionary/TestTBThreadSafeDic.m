@@ -24,8 +24,17 @@ typedef NS_ENUM(NSUInteger, ReadWriteType) {
 
 void readWriteOnMultiThread(NSMutableDictionary* dic)
 {
-    //dispatch_queue_t serialQueue = dispatch_queue_create("serialQueue", DISPATCH_QUEUE_SERIAL);
-    dispatch_queue_t concurrentQueue = dispatch_queue_create("ccQueue", DISPATCH_QUEUE_CONCURRENT);
+    dispatch_queue_t serialQueue = dispatch_queue_create("serialQueue", DISPATCH_QUEUE_SERIAL);
+    
+    dispatch_queue_t concurrentQueue = dispatch_queue_create("concurrentQueue", DISPATCH_QUEUE_CONCURRENT);
+    
+    dispatch_queue_attr_t qosAttribute2 =
+        dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_CONCURRENT, QOS_CLASS_USER_INITIATED, 0);
+    dispatch_queue_t concurrentQueue2 = dispatch_queue_create("com.thread-safe.queue.test1", qosAttribute2);
+    
+    dispatch_queue_attr_t qosAttribute3 =
+        dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_CONCURRENT, QOS_CLASS_BACKGROUND, 0);
+    dispatch_queue_t concurrentQueue3 = dispatch_queue_create("com.thread-safe.queue.test2", qosAttribute3);
     
     NSString* key = @"key";
     NSString* key1 = @"key1";
@@ -40,7 +49,7 @@ void readWriteOnMultiThread(NSMutableDictionary* dic)
         //iterations
         //The number of times to execute the block.
         __block int loopCount = 0;
-        dispatch_apply(iterations, concurrentQueue, ^(size_t idx) {
+        void(^innerBlock)(void) =^{
             loopCount++;
             for(size_t count = 0; count < readTimesPerExecute; ++count)
             {
@@ -77,6 +86,19 @@ void readWriteOnMultiThread(NSMutableDictionary* dic)
                 //addEntriesFromDictionary
                 [dic addEntriesFromDictionary:@{key2:newVal2}];
             }
+        };
+        
+        dispatch_apply(iterations, serialQueue, ^(size_t idx) {
+            innerBlock();
+        });
+        dispatch_apply(iterations, concurrentQueue, ^(size_t idx) {
+            innerBlock();
+        });
+        dispatch_apply(iterations, concurrentQueue2, ^(size_t idx) {
+            innerBlock();
+        });
+        dispatch_apply(iterations, concurrentQueue3, ^(size_t idx) {
+            innerBlock();
         });
         NSLog(@"loopCount:%d", loopCount);
         endTime = CACurrentMediaTime();
@@ -137,40 +159,54 @@ void testUnsafeDic()
 {
     NSMutableDictionary* dic = [NSMutableDictionary new];
     readWriteOnMultiThread(dic);
+    NSLog(@"release dictionary");
+    dic = nil;
 }
 
 void testPMutexDic()
 {
     PMutexThreadSafeDictionary* dic = [PMutexThreadSafeDictionary new];
     readWriteOnMultiThread(dic);
+    NSLog(@"release dictionary");
+    dic = nil;
 }
 
 void testPMutexRWDic()
 {
     PMutexRWThreadSafeDictionary* dic = [PMutexRWThreadSafeDictionary new];
     readWriteOnMultiThread(dic);
+    NSLog(@"release dictionary");
+    dic = nil;
 }
 
 void testSpinLockDic()
 {
     SpinLockThreadSafeDictionary* dic = [SpinLockThreadSafeDictionary new];
     readWriteOnMultiThread(dic);
+    NSLog(@"release dictionary");
+    dic = nil;
 }
 
 void testBarrierDic()
 {
     BarrierThreadSafeDictionary* dic = [[BarrierThreadSafeDictionary alloc] initWithDictionary:@{}];
     readWriteOnMultiThread(dic);
+    NSLog(@"release dictionary");
+    dic = nil;
 }
 
 void testSpinLockRWDic()
 {
     SpinLockRWThreadSafeDictionary* dic = [SpinLockRWThreadSafeDictionary new];
     readWriteOnMultiThread(dic);
+    NSLog(@"release dictionary");
+    dic = nil;
 }
 
 void testFastestOSAtomicDic()
 {
     AtomicThreadSafeDictionary* dic = [AtomicThreadSafeDictionary new];
     readWriteOnMultiThread(dic);
+    NSLog(@"release dictionary");
+    dic = nil;
 }

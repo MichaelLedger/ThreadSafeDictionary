@@ -9,6 +9,7 @@
 #import <pthread/pthread.h>
 #import "PMutexRWThreadSafeDictionary.h"
 
+#warning DO NOT USE THIS CLASS in product/develop environment: it's not thead-safe!!!
 @interface PMutexRWThreadSafeDictionary()
 {
     pthread_mutex_t _mutex_read;
